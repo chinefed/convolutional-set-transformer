@@ -61,12 +61,15 @@ def _build_CST15():
 
 def CST15(pretrained=True):
     """
-    Loads or builds the CST15 model.
+    Loads or builds the CST15 model. In both cases, the model is compiled
+    with Adam optimizer and Categorical Crossentropy loss.
+
     Args:
-        pretrained (bool, optional): If True, loads CST15 pretrained on ImageNet.
-            If False, builds a new CST15 model from scratch. Defaults to True.
+        pretrained (bool): If `True`, loads CST15 pretrained on ImageNet.
+            If `False`, builds a new CST15 model from scratch.
+
     Returns:
-        keras.Model: The CST15 model instance.
+        model (KerasModel): The CST15 model instance.
     """
     if not isinstance(pretrained, bool):
         raise ValueError("Pretrained must be a boolean value")

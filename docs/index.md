@@ -2,17 +2,9 @@
 
 The **cstmodels** package provides the reference implementation of the [Convolutional Set Transformer](https://arxiv.org/abs/2509.22889) (Chinello & Boracchi, 2025). It includes reusable Keras 3 layers for building CST architectures, and provides an easy interface to load and use CST-15, the first set-learning backbone pre-trained on ImageNet.
 
-If you have any questions or concerns, please feel free to contact me at <federico.chinello@studbocconi.it>. Full API documentation available [Here](https://chinefed.github.io/convolutional-set-transformer/). 
+If you have any questions or concerns, please feel free to contact me at <federico.chinello@studbocconi.it>.
 
-## Table of Contents
-- [About Convolutional Set Transformers](#about-convolutional-set-transformers)
-- [Installation](#installation)
-- [Loading CST-15](#loading-cst-15)
-- [Building a CST from scratch](#building-a-cst-from-scratch)
-- [Tutorial Notebooks](#tutorial-notebooks)
-- [Citation](#citation)
-
-## About Convolutional Set Transformers
+## About CSTs
 
 ![](https://raw.githubusercontent.com/chinefed/convolutional-set-transformer/c8329b2508e4d503a95931fdec77dbc64732e5c6/assets/summary.png)
 

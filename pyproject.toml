@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "cstmodels"
-version = "0.1.0"
+version = "0.1.1"
 description = """
 This package provides the reference implementation of the Convolutional Set Transformer (Chinello & Boracchi, 2025). It includes reusable Keras 3 layers for building CST architectures, and provides an easy interface to load and use the CST-15 model pre-trained on ImageNet.
 """
@@ -20,7 +20,8 @@ dependencies = [
   "numpy>=1.24"
 ]
 
-
 [project.urls]
-Homepage = "https://github.com/chinefed/convolutional-set-transformer"
+Homepage = "https://chinefed.github.io/convolutional-set-transformer/"
 Source = "https://github.com/chinefed/convolutional-set-transformer"
+Documentation = "https://chinefed.github.io/convolutional-set-transformer/"
+

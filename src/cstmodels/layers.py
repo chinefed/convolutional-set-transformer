@@ -12,29 +12,49 @@ CST15_MHSA_HEAD_DIM = 64
 class SmartReshape2D(layers.Layer):
     """
     Reshapes 4D or 5D tensors to handle an explicit set dimension.
+
     This layer is useful when working with data that may or may not have a set dimension
-    (e.g., (batch * set_size, height, width, channels) vs. (batch, set_size, height, width, channels)).
+    (e.g., `(batch * set_size, H, W, C)` vs. `(batch, set_size, H, W, C)`).
     It automatically infers the correct shape and reshapes the input tensor accordingly.
-    Methods
-    -------
-    build(input_shape):
-        Standard Keras build method. No weights are created in this layer.
-    call(x, set_size=None):
-        Reshapes the input tensor `x` based on its number of dimensions.
-        If `x` is 5D, flattens the set dimension into the batch dimension.
-        If `x` is 4D, expands the tensor to include the set dimension using the provided `set_size`.
-        Returns the reshaped tensor and the set size.
-    get_config():
-        Returns the configuration of the layer for serialization.
+    
+    Args:
+        **kwargs: Keyword arguments for the Layer base class.
     """
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         pass
 
     def build(self, input_shape):
+        """
+        This method simply marks the layer as built.
+
+        Args:
+            input_shape (shapelike): Shape of the input to the layer.
+        """
         self.built = True
 
     def call(self, x, set_size=None):
+        """
+        Main logic for the SmartReshape2D layer.
+
+        If the input tensor has 5 dimensions, it is assumed to be in the format
+        `(batch, set_size, H, W, C)` and is reshaped to
+        `(batch * set_size, H, W, C)`.
+
+        If the input tensor has 4 dimensions, it is assumed to be in the format
+        `(batch * set_size, H, W, C)` and is reshaped to
+        `(batch, set_size, H, W, C)`, where `set_size` is provided as an argument.
+
+        Args:
+            x (tensor): Input tensor of shape `(batch * set_size, H, W, C)`
+                        or `(batch, set_size, H, W, C)`.
+            set_size (scalar): Size of the set dimension (required if input is 4D, optional if 5D)
+              or `None`.
+
+        Returns:
+            x (tensor): The reshaped tensor.
+            set_size (scalar): The set size.
+        """
         tensor_shape = ops.shape(x)
         height = tensor_shape[-3]
         width = tensor_shape[-2]
@@ -56,6 +76,12 @@ class SmartReshape2D(layers.Layer):
         return x, set_size
     
     def get_config(self):
+        """
+        Returns the configuration of the layer for serialization.
+
+        Returns:
+            config (dict): Configuration of the layer for serialization.
+        """
         config = super().get_config()
         return config
     
@@ -63,24 +89,16 @@ class SmartReshape2D(layers.Layer):
 @keras.utils.register_keras_serializable()
 class SetConv2D(layers.Layer):
     """
-    Implementation of the SetConv2D layer.
+    Implementation of the SetConv2D layer. For more details see Chinello & Boracchi (2025).
 
     Args:
         filters (int): Number of output filters in the convolution.
-        kernel_size (int or tuple): Size of the convolution kernel.
-        activation (str or None, optional): Activation function to use. Defaults to 'linear' if None.
-        mhsa_dropout (float, optional): Dropout rate for the MHSA layer. Defaults to 0.0.
-        padding (str, optional): Padding mode for convolution ('same' or 'valid'). Defaults to 'same'.
-        strides (int or tuple, optional): Stride size for convolution. Defaults to 1.
+        kernel_size (int | tuple): Size of the convolution kernel.
+        activation (string | None): Activation function to use.
+        mhsa_dropout (float): Dropout rate for the MHSA layer.
+        padding (string): Padding mode for convolution (`same` or `valid`).
+        strides (int | tuple): Stride size for convolution.
         **kwargs: Additional keyword arguments for the Layer base class.
-
-    Methods:
-        build(input_shape):
-            Builds the layer (no weights to initialize).
-        call(X, set_size):
-            Main logic for the SetConv2D layer. Receives input tensor and set size.
-        get_config():
-            Returns the configuration of the layer for serialization.
     """
     def __init__(
             self,
@@ -121,9 +139,25 @@ class SetConv2D(layers.Layer):
         self.activ = layers.Activation(activation=self.activation)
 
     def build(self, input_shape):
+        """
+        This method simply marks the layer as built.
+
+        Args:
+            input_shape (shapelike): Shape of the input to the layer.
+        """
         self.built = True
 
     def call(self, X, set_size):
+        """
+        Main logic for the SetConv2D layer.
+
+        Args:
+            X (tensor): Input tensor of shape `(batch * set_size, H, W, C)`.
+            set_size (scalar): Size of the set dimension.
+
+        Returns:
+            X (tensor): Output tensor after applying SetConv2D operations.
+        """
         # 1. Convolution
         X = self.conv(X)
 
@@ -144,6 +178,12 @@ class SetConv2D(layers.Layer):
         return X
 
     def get_config(self):
+        """
+        Returns the configuration of the layer for serialization.
+
+        Returns:
+            config (dict): Configuration of the layer for serialization.
+        """
         config = super().get_config()
         config.update({
             'filters': self.filters,
